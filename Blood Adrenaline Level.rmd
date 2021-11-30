@@ -1,0 +1,40 @@
+---
+title: "Blood Adrenaline Level"
+author: "Matt Turk, Dale Hanks, William Foote"
+date: "9/5/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+adrenaline <- read.csv("project_data.csv")
+model1 <- aov(Adrenaline ~ as.factor(Drug)*as.factor(Activity), data = adrenaline)
+summary(model1)
+model.tables(model1)
+TukeyHSD(model1)
+```
+
+```{r}
+boxplot(Adrenaline ~ Drug + Activity, data = adrenaline)
+par(mfrow = c(2, 3))
+plot(model1$residuals)
+plot(model1)
+```
+
+```{r}
+model2 <- aov(Adrenaline ~ as.factor(Drug) + as.factor(Activity), data = adrenaline)
+summary(model2)
+model.tables(model2)
+TukeyHSD(model2)
+```
+
+```{r}
+boxplot(Adrenaline ~ Drug + Activity, data = adrenaline)
+with(adrenaline, interaction.plot(Drug, Activity, response = Adrenaline))
+par(mfrow = c(2, 3))
+plot(model2$residuals)
+plot(model2)
+```

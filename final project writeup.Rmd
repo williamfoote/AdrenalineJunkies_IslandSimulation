@@ -1,0 +1,136 @@
+---
+title: 'Socially Responsible Thrill-Seeking: Adrenaline Junkies in the Age of COVID-19'
+author: "Dale Hanks, Matthew Turk, William Foote"
+date: "9/11/2020"
+output: pdf_document
+fig_caption: yes
+toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+adrenaline <- read.csv("project_data.csv")
+```
+
+\newpage
+
+# 1. Abstract
+
+With the COVID-19 pandemic requiring citizens to socially-distance for the safety of others, many adrenaline junkies  had access to the activities they love most, such as riding roller coasters at amusement parks, taken from them abruptly. For the sake of the well-being and mental health of these individuals, it becomes imperative that we study and answer the following questions. With no end to the pandemic in sight, at least in the United States, how can thrill-seekers safely get their fix without endangering the health of their fellow citizens? And, given that adrenaline junkies are more likely to be prone to substance abuse, does this relationship exist because drugs change the amount of adrenaline released during an activity like bungee jumping? To answer this question, we recruited 36 virtual members of the simluated world called the *Island* to participate in a two-factor factorial experiment in which subjects consumed one of three types of drugs (or no drug as the control), and then participated in three activities and had their adrenaline levels measured immediately after. We took the adrenaline data and then analyzed it in R using Two-Way ANOVA tests to see if the relationships between the variables were statistically significant. Overall, we found that different activities lead to different adrenaline outputs, supporting the idea that there are still ways to get an adrenaline rush while social distancing. However, we found that the consumption of a drug before the activity didn't affect adrenaline levels compared to the control of not consuming a drug, nor did it affect the way a given activity affected adrenaline levels. We recommend that more research be done on a larger sample size, but more importantly we also call for more activities to be researched so that adventure-seekers can know which activities they should budget their resources to so as to get the most efficient and effective adrenaline rush possible.
+
+# 2. Introduction
+
+  Following the rise of COVID-19 in the spring of 2020, closures and “safer-at-home” orders were put in place by leaders around the world in attempts to slow the pandemic’s spread. As a result, the mental health of many has suffered. According to a Kaiser Family Foundation poll conducted in late March, citizens who were isolated due to stay-at-home orders reported significantly worse mental health effects related to COVID-19 than those who were not required to stay at home (Panchal et. al, 2020). We seek to study one specific population that may be disproportionately affected by coronavirus-related isolation: adrenaline junkies, or people “who enjoy intense and thrilling activities that generate a rush of adrenaline” (Raypole, 2020), a substance released in the body when a person feels a strong emotion, such as excitement, fear, or anger.
+  
+  Previous research on adrenaline junkies suggests that thrill-seekers may develop addictive tendencies to adventurous activities and experience symptoms such as withdrawal when they are without these experiences (Heirene et. al, 2016). However, many adrenaline-inducing outlets have shut down because of COVID-19, such as the amusement park and casino industries, which lost 59.9% of industry jobs from February to April 2020 (Pietsch, 2020). Among other issues caused by the stress of COVID-19 related job losses and other disruptions of people’s quality of life, has been an increase of substance abuse (Panchal et. al, 2020). This could be extremely problematic for thrill-seekers who are more susceptible to substance abuse (Heshmat, 2015).
+	
+Given this information, we seek to answer two questions. Is it possible for adrenaline junkies to get their fix in a socially-responsible way? And secondly, why does the link between substance abuse and thrill-seeking exist? Is it possibly because the use of drugs while participating in high-sensation activities increases adrenaline levels more so than when one is sober? We propose that there are ways to safely seek thrills while remaining six feet away from others. In response to the second question, we believe that the added “thrill” of using potentially-dangerous drugs while participating in potentially-dangerous (or otherwise adventurous activities) will increase adrenaline levels more than sober sensation-seeking.
+
+# 3. Methods:
+
+## 3.1 Participants:
+
+The online virtual world called the Island hosts our virtual participants who have consented to being in the study. Cross et. al (2013) found that men are more likely to pursue “novel or intense activities,” so we focused on males exclusively for this experiment. 36 islanders had previously consented to being studied were randomly assigned into four groups, one for each drug treatment. Within these four groups, islanders were again randomly split up into three groups for each of the adrenaline-inducing activities.
+
+We needed a multiple of 12 to get a balanced design. The activity treatment has 3 levels and the drug treatment has 4 levels, so there are 12 unique combinations of both factors. A sample size of 36 allows for each of the combinations of factors to be replicated three times.
+
+## 3.2 Design:
+
+The experiment is set up as a two-factor factorial design, with the design parameters being diagrammed below in figures 1 and 2.
+
+```{r, out.width = "50%", fig.pos="h", echo = FALSE, fig.cap="Design Parameters", fig.align="center"}
+knitr::include_graphics("parameters.png")
+```  
+
+In **Figure 1**, the response variable and two explanatory variables are shown with their individual levels.
+
+```{r, out.width = "50%", fig.pos="h", echo = FALSE, fig.cap="Design Factor Diagram", fig.align="center"}
+knitr::include_graphics("factor.png")
+```  
+
+In **Figure 2**, the factor diagram, we illustrate the different factors in the design, as well as the degrees of freedom of every component.
+
+# 5. Results
+
+## 5.1 Model Creation and ANOVA Analysis
+
+```{r, echo = FALSE}
+m1 <- aov(Adrenaline ~ as.factor(Drug)*as.factor(Activity), data = adrenaline)
+summary(m1)
+```
+
+#### Table 1: Two-Way ANOVA table
+
+In **Table 1**, we can see that only the Activity factor is significant, while Drug and the interaction between Activity and Drug are not significant. This means that only Activity completed has a significant impact on explaining variation in adrenaline levels of the two treatment factors, and also that the amount Activity affects adrenaline levels does not change based on the drug taken. 
+
+## 5.2 Post-Hoc Tukey HSD Analysis
+
+```{r, echo = FALSE}
+TukeyHSD(m1, which = 2)
+```
+
+#### Table 2: Post-hoc analysis for the difference in adrenaline levels for different activity methods.
+
+In **Table 2**, we can see that all three levels are considered significant because all p-values are zero. This means that all three activity methods are significantly different from each other in the effect that they have on adrenaline levels. 
+
+## 5.3 Interaction Plots
+
+```{r, echo = FALSE, fig.cap="Interaction Plot for relationships between Treatments and Response", fig.align="center", out.width = "75%"}
+with(adrenaline, interaction.plot(Drug, Activity, response = Adrenaline,
+                                  col = c("grey60", "moccasin", "olivedrab"),
+                                  lwd = 4,
+                                  cex.axis = .75,
+                                  ylab = "Adrenaline Level (pg/ml)",
+                                  leg.bg = c(cex = .2)))
+```
+
+In **Figure 3**, we can see that all three levels of activity are obviously significant because all the three lines are very far from each other in terms of the adrenaline levels associated with each activity. Bungee jumping had the highest adrenaline levels, while running had the second-most, and crocodile petting resulted in the lowest adrenaline levels.
+
+\newpage
+
+## 5.4 Diagnostic plots
+
+```{r, echo = FALSE, fig.cap="Diagnostic plots for the model", fig.align="center", out.width = "75%"}
+par(mfrow = c(2, 2))
+plot(m1, col = "olivedrab", pch = 19)
+```
+
+The main issue with the diagnostic plot is the constant variance condition. We see two symptoms of this problem, first in the Residuals vs. Fitted plot and then the Scale-Location plot. The Residuals vs. Fitted plot has a clear fan shape, and the Scale-Location plot has a consistent upward trend: the constant variance condition is not satisfied in our model.
+
+However, the normal QQ plot appears fine, as most of the points follow the expected pattern, even if there is some deviation at the tails. And, in the Residuals vs. Fitted plot, the residuals are centered at zero and do not follow a specific pattern (e.g. consistently increasing or decreasing), so the other conditions of model adequacy appear to be satisfied well.
+
+\newpage
+
+# 6. Discussion
+
+In terms of answering our research questions, the results are a mixed bag. Through our analysis, we can conclude that there are activities that have different effects on adrenaline, but in terms of why adrenaline junkies are more susceptible to substance-abuse issues is a question that remains to be answered. However, we can say from our analysis that the relationship between the two is not because using drugs changes the amount of adrenaline one gets when doing thrill-seeking activities. Though precautions should be taken to remain safe and socially responsible, including mask-wearing and social-distancing, we recommend a hearty sprint here and there if adrenaline junkies' favorite activities such as skydiving, bungee jumping, or rock climbing are not available due to COVID-19-related closures.
+
+More research should be done on the relationship between substance usage for adrenaline-seeking individuals, as our results did not uncover the reason for the existence of this link. Some studies suggest that this relationship might exist because sensation seekers perceive more benefits and fewer risks when it comes to decision making than non-sensation-seeking individuals. Perhaps in the future, researchers might investigate people's motives and desires as it relates to the substances studied in this experiment via surveys more than was possible given the Island's limited survey tools. 
+
+Our findings are limited by a few factors that might be rectified by future researchers. For one, 3 replicates for each treatment is a small sample size. However, because the difference in effect on adrenaline within the methods treatment was so large, it was easier to conduct a high-power experiment given a small sample size than if our effect size was small. This issue might be present in our investigation of the interaction term between Drug and Activity. Perhaps there is a significant effect between drugs and activity that we were not able to detect because the effect size and our sample size were too small -- both of these factors could lead to lower power (i.e. a lower probability of us correctly rejecting the null hypothesis that there is no relationship between drugs and activity in terms of adrenaline levels given that such a relationship actually exists).
+
+Secondly, as noted in the results section, the model has an issue with constant variance. However, as Montgomery (2013) points out, "If the assumption of homogeneity of variances is violated, the F test is only slightly affected in the balanced (equal sample sizes in all treatments) fixed effects model." Thus, this violation of model adequacy, though notable, should not discredit our findings altogether. Perhaps a transformation should be performed on the data in the future if one actually wants to use the regression model to predict adrenaline levels based on these three activities.
+
+Finally, more socially-distanced activities should be researched. Though we were only able to look at a certain number of activities because of time and limitations on what activities the Island supported us researching, many more likely exist that adrenaline-seekers can participate in without putting others at risk of contracting the virus. Some of these activities that might be considered are rock climbing, individual sports like archery, or watching horror moviesm to name a few. As case numbers of those infected by the virus continue to exceed the level at which we can safely complete return to normalcy, more must be done to make sure that those whose idea of "fun" is adventure-seeking are able to stay sane and get their fix, while preserving the safety of their fellow citizens.
+
+\newpage
+
+# 7. References
+
+## Our data
+
+Our data can be found and downloaded at the following link:
+
+https://docs.google.com/spreadsheets/d/1BwunwKqiPw1gZWtVUOMDlMqQAJgRUJjLtRcb2RYVN60/edit?usp=sharing
+
+## Links to referenced articles
+
+1. https://www.kff.org/coronavirus-covid-19/issue-brief/the-implications-of-covid-19-for-mental-health-and-substance-use/
+
+2. https://www.healthline.com/health/adrenaline-junkie
+
+3. https://www.businessinsider.com/jobs-industries-careers-hit-hardest-by-coronavirus-unemployment-data-2020-5
+
+4. https://www.psychologytoday.com/us/blog/science-choice/201508/can-you-be-addicted-adrenaline
+
+5. http://faculty.business.utsa.edu/manderso/STA4723/readings/Douglas-C.-Montgomery-Design-and-Analysis-of-Experiments-Wiley-2012.pdf
